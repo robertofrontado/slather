@@ -98,9 +98,8 @@ module Slather
 
       def coveralls_coverage_data
           coveralls_hash = {
-                :service_name => "bitrise",
                 :repo_token => coverage_access_token,
-                :source_files => coverage_files.map(&:as_json),
+                :source_files => coverage_files.map(&:as_json)
               }
           coveralls_hash.to_json
       end
