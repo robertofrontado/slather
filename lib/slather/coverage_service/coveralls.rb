@@ -98,8 +98,8 @@ module Slather
                 :service_name => "bitrise",
                 :author_name => (`git log --format=%an -n 1 HEAD`.chomp || ""),
                 :author_email => (`git log --format=%ae -n 1 HEAD`.chomp || ""),
-                :message => (`git log --format=%s -n 1 HEAD`.chomp || "")
-                :branch_name => jenkins_branch_name
+                :message => (`git log --format=%s -n 1 HEAD`.chomp || ""),
+                :branch_name => jenkins_branch_name,
                 :repo_token => coverage_access_token,
                 :source_files => coverage_files.map(&:as_json),
               }
