@@ -97,7 +97,14 @@ module Slather
       end
 
       def coveralls_coverage_data
-        if ci_service == :travis_ci || ci_service == :travis_pro
+        if ci_service == "bitrise"
+          coveralls_hash = {
+                :service_name => "bitrise",
+                :repo_token => coverage_access_token,
+                :source_files => coverage_files.map(&:as_json),
+              }
+          coveralls_hash.to_json
+        elsif ci_service == :travis_ci || ci_service == :travis_pro
           if travis_job_id
             if ci_service == :travis_ci
               
