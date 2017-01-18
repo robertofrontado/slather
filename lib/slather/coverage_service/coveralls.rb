@@ -97,90 +97,12 @@ module Slather
       end
 
       def coveralls_coverage_data
-        if ci_service == "bitrise"
           coveralls_hash = {
                 :service_name => "bitrise",
                 :repo_token => coverage_access_token,
                 :source_files => coverage_files.map(&:as_json),
               }
           coveralls_hash.to_json
-        elsif ci_service == :travis_ci || ci_service == :travis_pro
-          if travis_job_id
-            if ci_service == :travis_ci
-              
-              if coverage_access_token.to_s.strip.length > 0
-                raise StandardError, "Access token is set. Uploading coverage data for public repositories doesn't require an access token."
-              end
-
-              {
-                :service_job_id => travis_job_id,
-                :service_name => "travis-ci",
-                :source_files => coverage_files.map(&:as_json)
-              }.to_json
-            elsif ci_service == :travis_pro              
-
-              if coverage_access_token.to_s.strip.length == 0
-                raise StandardError, "Access token is not set. Uploading coverage data for private repositories requires an access token."
-              end
-
-              {
-                :service_job_id => travis_job_id,
-                :service_name => "travis-pro",
-                :repo_token => coverage_access_token,
-                :source_files => coverage_files.map(&:as_json)
-              }.to_json
-            end
-          else
-            raise StandardError, "Environment variable `TRAVIS_JOB_ID` not set. Is this running on a travis build?"
-          end
-        elsif ci_service == :circleci
-          if circleci_job_id
-            coveralls_hash = {
-              :service_job_id => circleci_job_id,
-              :service_name => "circleci",
-              :repo_token => coverage_access_token,
-              :source_files => coverage_files.map(&:as_json),
-              :git => circleci_git_info,
-              :service_build_url => circleci_build_url
-            }
-
-            if circleci_pull_request != nil && circleci_pull_request.length > 0
-              coveralls_hash[:service_pull_request] = circleci_pull_request.split("/").last
-            end
-
-            coveralls_hash.to_json
-          else
-            raise StandardError, "Environment variable `CIRCLE_BUILD_NUM` not set. Is this running on a circleci build?"
-          end
-        elsif ci_service == :jenkins
-          if jenkins_job_id
-            {
-              service_job_id: jenkins_job_id,
-              service_name: "jenkins",
-              repo_token: coverage_access_token,
-              source_files: coverage_files.map(&:as_json),
-              git: jenkins_git_info
-            }.to_json
-          else
-            raise StandardError, "Environment variable `BUILD_ID` not set. Is this running on a jenkins build?"
-          end
-        elsif ci_service == :buildkite
-          if buildkite_job_id
-            {
-              :service_job_id => buildkite_job_id,
-              :service_name => "buildkite",
-              :repo_token => coverage_access_token,
-              :source_files => coverage_files.map(&:as_json),
-              :git => buildkite_git_info,
-              :service_build_url => buildkite_build_url,
-              :service_pull_request => buildkite_pull_request
-            }.to_json
-          else
-            raise StandardError, "Environment variable `BUILDKITE_BUILD_NUMBER` not set. Is this running on a buildkite build?"
-          end
-        else
-          raise StandardError, "No support for ci named #{ci_service}"
-        end
       end
       private :coveralls_coverage_data
 
