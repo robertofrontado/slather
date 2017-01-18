@@ -101,7 +101,7 @@ module Slather
                 :message => (`git log --format=%s -n 1 HEAD`.chomp || ""),
                 :branch_name => jenkins_branch_name,
                 :repo_token => coverage_access_token,
-                :source_files => coverage_files.map(&:as_json),
+                :source_files => coverage_files.map(&:as_json)
               }
           coveralls_hash.to_json
       end
